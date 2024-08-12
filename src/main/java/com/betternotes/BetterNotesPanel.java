@@ -53,6 +53,7 @@ public class BetterNotesPanel extends PluginPanel {
         setBackground(ColorScheme.DARK_GRAY_COLOR);
         setBorder(new EmptyBorder(UI_PADDING, UI_PADDING, UI_PADDING, UI_PADDING));
 
+        // I have no idea why I have to divide this by 2, but it works
         header.setLayout(new BorderLayout(0, UI_PADDING / 2));
         header.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
