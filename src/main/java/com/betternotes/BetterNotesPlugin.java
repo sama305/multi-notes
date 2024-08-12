@@ -19,7 +19,9 @@ import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Better Notes"
+	name = "Better Notes",
+	description = "Simple and powerful note editing.",
+	loadWhenOutdated = true
 )
 public class BetterNotesPlugin extends Plugin
 {
