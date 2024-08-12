@@ -40,7 +40,7 @@ public class BetterNotesPlugin extends Plugin
 		panel = injector.getInstance(BetterNotesPanel.class);
 		panel.init(config);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/side_panel_icon.png");
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/better_notes_icon.png");
 
 		navButton = NavigationButton.builder()
 				.tooltip("Better Notes")
