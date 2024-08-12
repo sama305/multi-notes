@@ -18,12 +18,13 @@ import java.util.List;
 
 @Slf4j
 public class BetterNotesPanel extends PluginPanel {
+    private final int UI_PADDING = 10;
+
     private final JPanel header = new JPanel();
     private JComboBox<String> selector = new JComboBox<String>();
     private final JButton addNoteButton = new JButton();
 
     private final JPanel content = new JPanel();
-    private final JTextField titleEditor = new JTextField();
     private final JTextArea bodyEditor = new JTextArea();
     private final JButton deleteNoteButton = new JButton();
 
@@ -46,12 +47,11 @@ public class BetterNotesPanel extends PluginPanel {
         getParent().setLayout(new BorderLayout());
         getParent().add(this, BorderLayout.CENTER); // <- this allows the panel to take up entire space
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0, UI_PADDING));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
-        setBorder(new EmptyBorder(10, 10, 10, 10));
+        setBorder(new EmptyBorder(UI_PADDING, UI_PADDING, UI_PADDING, UI_PADDING));
 
-        header.setLayout(new GridLayout(0, 1, 0, 5));
-        header.setBorder(new EmptyBorder(10, 10, 10, 10));
+        header.setLayout(new GridLayout(0, 1, 0, UI_PADDING));
         header.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
         selector = new JComboBox<String>(getComboBoxLabels(noteDataArray));
@@ -65,11 +65,8 @@ public class BetterNotesPanel extends PluginPanel {
             deleteNoteButton.setEnabled(false);
         }
 
-        content.setLayout(new BorderLayout(0, 5));
-        content.setBorder(new EmptyBorder(10, 10, 10, 10));
+        content.setLayout(new BorderLayout(0, UI_PADDING));
         content.setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-        titleEditor.setText(currentNote.title);
 
         bodyEditor.setTabSize(2);
         bodyEditor.setLineWrap(true);
@@ -82,20 +79,6 @@ public class BetterNotesPanel extends PluginPanel {
         selector.addItemListener(e -> onChangeSelectedNote(selector.getSelectedIndex()));
 
         addNoteButton.addActionListener(e -> onPressAddNote());
-
-        titleEditor.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-
-            @Override
-            public void keyPressed(KeyEvent e) {}
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                final Document doc = titleEditor.getDocument();
-                onEditNoteTitle(doc);
-            }
-        });
 
         bodyEditor.addKeyListener(new KeyListener() {
             @Override
@@ -117,7 +100,6 @@ public class BetterNotesPanel extends PluginPanel {
         header.add(selector, BorderLayout.NORTH);
         header.add(addNoteButton, BorderLayout.CENTER);
 
-        content.add(titleEditor, BorderLayout.NORTH);
         content.add(bodyEditor, BorderLayout.CENTER);
         content.add(deleteNoteButton, BorderLayout.SOUTH);
 
@@ -137,7 +119,19 @@ public class BetterNotesPanel extends PluginPanel {
         List<NoteData> notes = allNoteData.getAllNotes();
         String[] allLabels = new String[notes.size()];
         for (int i = 0; i < allLabels.length; i++) {
-            allLabels[i] = (i + 1) + ": " + (notes.get(i).title.isBlank() ? "Unnamed Note" : notes.get(i).title);
+            final NoteData curNote = notes.get(i);
+
+            // grab first line or if only one line grab entire string
+            final int endOfFirstSentence = curNote.content.indexOf('\n');
+            String curTitle;
+            if (endOfFirstSentence != -1) {
+                curTitle = curNote.content.substring(0, endOfFirstSentence);
+            }
+            else {
+                curTitle = curNote.content;
+            }
+
+            allLabels[i] = (i + 1) + ": " + (curTitle.isBlank() ? "Unnamed Note" : curTitle);
         }
         return allLabels;
     }
@@ -173,7 +167,6 @@ public class BetterNotesPanel extends PluginPanel {
 
         // set panel to match currentNote data
         bodyEditor.setText(currentNote.content);
-        titleEditor.setText(currentNote.title);
     }
 
     void onPressAddNote() {
@@ -186,26 +179,14 @@ public class BetterNotesPanel extends PluginPanel {
         selector.setSelectedIndex(noteDataArray.size() - 1);
     }
 
-    void onEditNoteTitle(Document doc) {
-        try {
-            // change data of currentNote to match panel text field and save to config
-            currentNote.title = doc.getText(0, doc.getLength());
-            save();
-
-            // update the selector text to match
-            updateNoteSelector();
-        }
-        catch (BadLocationException ex) {
-            log.warn("Notes Document Bad Location: " + ex);
-        }
-    }
-
     void onEditNoteContent(Document doc) {
         try {
             // notes are only saved when written to
             // i.e., new, empty notes won't be saved
             currentNote.content = doc.getText(0, doc.getLength());
             save();
+
+            updateNoteSelector();
         }
         catch (BadLocationException ex) {
             log.warn("Notes Document Bad Location: " + ex);
