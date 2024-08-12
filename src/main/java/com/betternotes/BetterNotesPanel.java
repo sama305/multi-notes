@@ -38,6 +38,9 @@ public class BetterNotesPanel extends PluginPanel {
     @Inject
     private EventBus eventBus;
 
+    @Inject
+    private Gson g;
+
     void init(BetterNotesConfig config)
     {
         this.config = config;
@@ -165,12 +168,10 @@ public class BetterNotesPanel extends PluginPanel {
     }
 
     void save() {
-        final Gson g = new Gson();
         config.notesJSON(g.toJson(noteDataArray));
     }
 
     void load() {
-        final Gson g = new Gson();
         noteDataArray = g.fromJson(config.notesJSON(), NoteDataArray.class);
         if (this.config.currentIndex() >= noteDataArray.size()) {
             this.config.currentIndex(0);
