@@ -19,6 +19,10 @@ public class NoteDataArray {
         this.allNotes.add(note);
     }
 
+    public void deleteNote(int index) {
+        this.allNotes.remove(index);
+    }
+
     public int size() {
         return this.allNotes.size();
     }

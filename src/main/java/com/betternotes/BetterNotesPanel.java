@@ -60,10 +60,8 @@ public class BetterNotesPanel extends PluginPanel {
         addNoteButton.setText("<< NEW NOTE >>");
 
         deleteNoteButton.setText("<< DELETE NOTE >>");
-        if (noteDataArray.size() == 1) {
-            // you can't get to zero notes (as of now)
-            deleteNoteButton.setEnabled(false);
-        }
+        // you can't get to zero notes (as of now)
+        deleteNoteButton.setEnabled(noteDataArray.size() != 1);
 
         content.setLayout(new BorderLayout(0, UI_PADDING));
         content.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -79,6 +77,8 @@ public class BetterNotesPanel extends PluginPanel {
         selector.addItemListener(e -> onChangeSelectedNote(selector.getSelectedIndex()));
 
         addNoteButton.addActionListener(e -> onPressAddNote());
+
+        deleteNoteButton.addActionListener(e -> onPressDeleteNote());
 
         bodyEditor.addKeyListener(new KeyListener() {
             @Override
@@ -146,6 +146,16 @@ public class BetterNotesPanel extends PluginPanel {
         selector.setSelectedIndex(config.currentIndex());
     }
 
+    void updateDeleteButton() {
+        // disable delete button if only 1 note
+        if (deleteNoteButton.isEnabled() && noteDataArray.size() == 1) {
+            deleteNoteButton.setEnabled(false);
+        }
+        else if (!deleteNoteButton.isEnabled() && noteDataArray.size() > 1) {
+            deleteNoteButton.setEnabled(true);
+        }
+    }
+
     void save() {
         final Gson g = new Gson();
         config.notesJSON(g.toJson(noteDataArray));
@@ -172,11 +182,31 @@ public class BetterNotesPanel extends PluginPanel {
     void onPressAddNote() {
         noteDataArray.addNote(new NoteData());
 
-        // update combo box
-        updateNoteSelector();
+        // set currentIndex to be last note
+        config.currentIndex(noteDataArray.size() - 1);
 
-        // change the selected note to the new one
-        selector.setSelectedIndex(noteDataArray.size() - 1);
+        // update other elements
+        updateNoteSelector();
+        updateDeleteButton();
+    }
+
+    void onPressDeleteNote() {
+        // this function does not need to do any check for # of notes
+        // because it will only be called when there is >1 note
+        int currentIndex = config.currentIndex();
+
+        noteDataArray.deleteNote(currentIndex);
+
+        // make sure index not out of bounds
+        if (currentIndex >= noteDataArray.size() - 1) {
+            config.currentIndex(currentIndex - 1);
+        }
+
+        // update other elements
+        updateNoteSelector();
+        updateDeleteButton();
+
+        onChangeSelectedNote(config.currentIndex());
     }
 
     void onEditNoteContent(Document doc) {
