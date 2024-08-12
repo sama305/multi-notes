@@ -37,9 +37,8 @@ public class BetterNotesPanel extends PluginPanel {
 
     void init(BetterNotesConfig config)
     {
-        load();
         this.config = config;
-        currentNote = noteDataArray.get(config.currentIndex());
+        load();
 
 
 
@@ -161,6 +160,10 @@ public class BetterNotesPanel extends PluginPanel {
     void load() {
         final Gson g = new Gson();
         noteDataArray = g.fromJson(config.notesJSON(), NoteDataArray.class);
+        if (this.config.currentIndex() >= noteDataArray.size()) {
+            this.config.currentIndex(0);
+        }
+        currentNote = noteDataArray.get(config.currentIndex());
     }
 
     void onChangeSelectedNote(int index) {

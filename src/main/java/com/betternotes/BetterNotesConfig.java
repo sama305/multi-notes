@@ -17,7 +17,7 @@ public interface BetterNotesConfig extends Config
     default String notesJSON()
     {
         final Gson g = new Gson();
-        final NoteDataArray defaultNotes = new NoteDataArray(new NoteData[]{ new NoteData("Default Note", "") });
+        final NoteDataArray defaultNotes = new NoteDataArray(new NoteData[]{ new NoteData() });
         return g.toJson(defaultNotes);
     }
 
