@@ -43,7 +43,7 @@ public class BetterNotesPlugin extends Plugin
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/side_panel_icon.png");
 
 		navButton = NavigationButton.builder()
-				.tooltip("Notes")
+				.tooltip("Better Notes")
 				.priority(7)
 				.icon(icon)
 				.panel(panel)
