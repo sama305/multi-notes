@@ -23,6 +23,7 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
     private final JButton newNoteButton = new JButton();
 
     private final JPanel noteContent = new JPanel();
+    private final JButton deleteNoteButton = new JButton();
     private final JTextField noteTitleEditor = new JTextField();
     private final JTextArea noteEditor = new JTextArea();
 
@@ -55,6 +56,10 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
         noteSelector.setSelectedIndex(config.currentIndex());
 
         newNoteButton.setText("<< NEW NOTE >>");
+        deleteNoteButton.setText("<< DELETE NOTE >>");
+        if (allNotes.getAllNotes().size() == 1) {
+            deleteNoteButton.setEnabled(false);
+        }
 
         noteContent.setLayout(new BorderLayout(0, 5));
         noteContent.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -115,8 +120,10 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
 
         noteToolbar.add(noteSelector, BorderLayout.NORTH);
         noteToolbar.add(newNoteButton, BorderLayout.CENTER);
+
         noteContent.add(noteTitleEditor, BorderLayout.NORTH);
         noteContent.add(noteEditor, BorderLayout.CENTER);
+        noteContent.add(deleteNoteButton, BorderLayout.SOUTH);
 
         add(noteToolbar, BorderLayout.NORTH);
         add(noteContent, BorderLayout.CENTER);
