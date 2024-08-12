@@ -34,4 +34,8 @@ public class NoteDataArray {
     public void addNote(NoteData note) {
         this.allNotes.add(note);
     }
+
+    public int size() {
+        return this.allNotes.size();
+    }
 }

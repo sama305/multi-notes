@@ -17,7 +17,7 @@ import java.awt.event.*;
 import java.util.List;
 
 @Slf4j
-public class BetterNotesPanel extends PluginPanel implements ItemListener {
+public class BetterNotesPanel extends PluginPanel {
     private final JPanel noteToolbar = new JPanel();
     private JComboBox<String> noteSelector = new JComboBox<String>();
     private final JButton newNoteButton = new JButton();
@@ -30,16 +30,23 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
     private NoteData currentNote;
     private NoteDataArray noteDataArray;
 
+    private BetterNotesConfig config;
+
     @Inject
     private EventBus eventBus;
 
     void init(BetterNotesConfig config)
     {
+        this.config = config;
+
+        // load in the notes as a Java object
         final Gson g = new Gson();
         noteDataArray = g.fromJson(config.notesJSON(), NoteDataArray.class);
         List<NoteData> allNotes = noteDataArray.getAllNotes();
 
+        // set current note
         currentNote = allNotes.get(config.currentIndex());
+
 
         getParent().setLayout(new BorderLayout());
         getParent().add(this, BorderLayout.CENTER);
@@ -52,12 +59,11 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
         noteToolbar.setBorder(new EmptyBorder(10, 10, 10, 10));
         noteToolbar.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-
         noteSelector = new JComboBox<String>(getComboBoxLabels(noteDataArray));
-        noteSelector.addItemListener(this);
         noteSelector.setSelectedIndex(config.currentIndex());
 
         newNoteButton.setText("<< NEW NOTE >>");
+
         deleteNoteButton.setText("<< DELETE NOTE >>");
         if (allNotes.size() == 1) {
             deleteNoteButton.setEnabled(false);
@@ -68,6 +74,16 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
         noteContent.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
         noteTitleEditor.setText(currentNote.title);
+
+        noteEditor.setTabSize(2);
+        noteEditor.setLineWrap(true);
+        noteEditor.setWrapStyleWord(true);
+        noteEditor.setText(currentNote.content);
+
+        noteSelector.addItemListener(e -> changeSelectedNote(noteSelector.getSelectedIndex()));
+
+        newNoteButton.addActionListener(e -> addNewNote());
+
         noteTitleEditor.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
@@ -80,11 +96,10 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
                 final Document doc = noteTitleEditor.getDocument();
                 try
                 {
-                    allNotes.get(config.currentIndex()).title = doc.getText(0, doc.getLength());
+                    currentNote.title = doc.getText(0, doc.getLength());
                     config.notesJSON(g.toJson(noteDataArray));
 
-                    DefaultComboBoxModel<String> newTitles = new DefaultComboBoxModel<>(getComboBoxLabels(noteDataArray));
-                    noteSelector.setModel(newTitles);
+                    updateNoteSelector();
                 }
                 catch (BadLocationException ex)
                 {
@@ -93,10 +108,6 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
             }
         });
 
-        noteEditor.setTabSize(2);
-        noteEditor.setLineWrap(true);
-        noteEditor.setWrapStyleWord(true);
-        noteEditor.setText(currentNote.content);
         noteEditor.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
@@ -109,7 +120,7 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
                 final Document doc = noteEditor.getDocument();
                 try
                 {
-                    allNotes.get(config.currentIndex()).content = doc.getText(0, doc.getLength());
+                    currentNote.content = doc.getText(0, doc.getLength());
                     config.notesJSON(g.toJson(noteDataArray));
                 }
                 catch (BadLocationException ex)
@@ -136,18 +147,44 @@ public class BetterNotesPanel extends PluginPanel implements ItemListener {
         eventBus.unregister(this);
     }
 
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() == noteSelector) {
-        }
-    }
-
     String[] getComboBoxLabels(NoteDataArray allNoteData) {
-        String[] allTitles = allNoteData.getAllNotes().stream().map(noteData -> noteData.title).toArray(String[]::new);
-        String[] allLabels = new String[allTitles.length];
+        List<NoteData> notes = allNoteData.getAllNotes();
+        String[] allLabels = new String[notes.size()];
         for (int i = 0; i < allLabels.length; i++) {
-            allLabels[i] = i + ": " + (allTitles[i].isBlank() ? "Unnamed Note" : allTitles[i]);
+            allLabels[i] = i + ": " + (notes.get(i).title.isBlank() ? "Unnamed Note" : notes.get(i).title);
         }
         return allLabels;
+    }
+
+    void updateNoteSelector() {
+        DefaultComboBoxModel<String> newTitles = new DefaultComboBoxModel<String>(getComboBoxLabels(noteDataArray));
+        noteSelector.setModel(newTitles);
+        noteSelector.setSelectedIndex(config.currentIndex());
+    }
+
+    void changeSelectedNote(int index) {
+        // change current note and index and update panel content
+        config.currentIndex(index);
+        currentNote = noteDataArray.getAllNotes().get(index);
+        syncCurrentNote();
+    }
+
+    void syncCurrentNote() {
+        noteEditor.setText(currentNote.content);
+        noteTitleEditor.setText(currentNote.title);
+    }
+
+    void addNewNote() {
+        noteDataArray.addNote(new NoteData());
+
+        // update combo box
+        updateNoteSelector();
+
+        // change the selected note to the new one
+        noteSelector.setSelectedIndex(noteDataArray.size() - 1);
+//
+//        // update config
+//        Gson g = new Gson();
+//        config.notesJSON(g.toJson(noteDataArray));
     }
 }

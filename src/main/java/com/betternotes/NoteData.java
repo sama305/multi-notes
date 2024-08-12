@@ -8,4 +8,9 @@ public class NoteData {
         this.title = title;
         this.content = content;
     }
+
+    public NoteData() {
+        this.title = "";
+        this.content = "";
+    }
 }
