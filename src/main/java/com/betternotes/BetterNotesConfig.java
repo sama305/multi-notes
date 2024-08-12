@@ -12,7 +12,8 @@ public interface BetterNotesConfig extends Config
     @ConfigItem(
             keyName = "notesJSON",
             name = "notes",
-            description = ""
+            description = "",
+            hidden = true
     )
     default String notesJSON()
     {
@@ -32,7 +33,8 @@ public interface BetterNotesConfig extends Config
     @ConfigItem(
             keyName = "currentNoteIndex",
             name = "index",
-            description = ""
+            description = "",
+            hidden = true
     )
     default int currentIndex()
     {

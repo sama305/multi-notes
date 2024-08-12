@@ -20,7 +20,7 @@ import java.awt.image.BufferedImage;
 @Slf4j
 @PluginDescriptor(
 	name = "Better Notes",
-	description = "Simple and powerful note editing.",
+	description = "Better Notes adds a simple and powerful note editor that has note organization baked in.",
 	loadWhenOutdated = true
 )
 public class BetterNotesPlugin extends Plugin
