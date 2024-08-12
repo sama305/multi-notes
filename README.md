@@ -1,2 +1,6 @@
-# Example
-An example greeter plugin
+# Better Notes
+A simple and powerful note editing plugin.
+
+## Features
+* Note-taking
+* Multiple notes
