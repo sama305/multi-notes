@@ -21,6 +21,8 @@ public class BetterNotesPanel extends PluginPanel {
     private final int UI_PADDING = 10;
 
     private final JPanel header = new JPanel();
+    private final JPanel selectorContainer = new JPanel();
+    private final JLabel selectorLabel = new JLabel("Select a note:");
     private JComboBox<String> selector = new JComboBox<String>();
     private final JButton addNoteButton = new JButton();
 
@@ -51,8 +53,10 @@ public class BetterNotesPanel extends PluginPanel {
         setBackground(ColorScheme.DARK_GRAY_COLOR);
         setBorder(new EmptyBorder(UI_PADDING, UI_PADDING, UI_PADDING, UI_PADDING));
 
-        header.setLayout(new GridLayout(0, 1, 0, UI_PADDING));
+        header.setLayout(new BorderLayout(0, UI_PADDING / 2));
         header.setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+        selectorContainer.setLayout(new GridLayout(2, 1));
 
         selector = new JComboBox<String>(getComboBoxLabels(noteDataArray));
         selector.setSelectedIndex(config.currentIndex());
@@ -97,8 +101,11 @@ public class BetterNotesPanel extends PluginPanel {
 
 
         // final construction of panel
-        header.add(selector, BorderLayout.NORTH);
-        header.add(addNoteButton, BorderLayout.CENTER);
+        selectorContainer.add(selectorLabel);
+        selectorContainer.add(selector);
+
+        header.add(selectorContainer, BorderLayout.NORTH);
+        header.add(addNoteButton, BorderLayout.SOUTH);
 
         content.add(bodyEditor, BorderLayout.CENTER);
         content.add(deleteNoteButton, BorderLayout.SOUTH);
