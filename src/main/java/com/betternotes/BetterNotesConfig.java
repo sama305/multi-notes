@@ -1,6 +1,5 @@
 package com.betternotes;
 
-import com.google.gson.Gson;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -12,14 +11,12 @@ public interface BetterNotesConfig extends Config
     @ConfigItem(
             keyName = "notesJSON",
             name = "notes",
-            description = "",
-            hidden = true
+            description = ""
     )
     default String notesJSON()
     {
-        final Gson g = new Gson();
-        final NoteDataArray defaultNotes = new NoteDataArray(new NoteData[]{ new NoteData() });
-        return g.toJson(defaultNotes);
+        // empty single note
+        return "{\"allNotes\":[{\"content\":\"\"}]}";
     }
 
     @ConfigItem(
