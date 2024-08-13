@@ -1,4 +1,4 @@
-package com.betternotes;
+package com.multinotes;
 
 public class NoteData {
     protected String content;

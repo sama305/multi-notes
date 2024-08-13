@@ -1,17 +1,18 @@
-package com.betternotes;
+package com.multinotes;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("betternotes")
-public interface BetterNotesConfig extends Config
+@ConfigGroup("multinotes")
+public interface MultiNotesConfig extends Config
 {
     // we could store notes in JSON
     @ConfigItem(
             keyName = "notesJSON",
             name = "notes",
-            description = ""
+            description = "",
+			hidden = true
     )
     default String notesJSON()
     {

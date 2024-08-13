@@ -1,4 +1,4 @@
-package com.betternotes;
+package com.multinotes;
 
 import java.util.ArrayList;
 import java.util.Arrays;

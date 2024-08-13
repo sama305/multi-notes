@@ -1,4 +1,4 @@
-package com.betternotes;
+package com.multinotes;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.awt.event.*;
 import java.util.List;
 
 @Slf4j
-public class BetterNotesPanel extends PluginPanel {
+public class MultiNotesPanel extends PluginPanel {
     private final int UI_PADDING = 10;
 
     private final JPanel header = new JPanel();
@@ -33,7 +33,7 @@ public class BetterNotesPanel extends PluginPanel {
     private NoteData currentNote;
     private NoteDataArray noteDataArray;
 
-    private BetterNotesConfig config;
+    private MultiNotesConfig config;
 
     @Inject
     private EventBus eventBus;
@@ -41,7 +41,7 @@ public class BetterNotesPanel extends PluginPanel {
     @Inject
     private Gson g;
 
-    void init(BetterNotesConfig config)
+    void init(MultiNotesConfig config)
     {
         this.config = config;
         load();

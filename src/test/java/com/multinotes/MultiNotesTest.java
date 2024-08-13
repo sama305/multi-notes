@@ -1,13 +1,13 @@
-package com.betternotes;
+package com.multinotes;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class BetterNotesTest
+public class MultiNotesTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(BetterNotesPlugin.class);
+		ExternalPluginManager.loadBuiltin(MultiNotesPlugin.class);
 		RuneLite.main(args);
 	}
 }

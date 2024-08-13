@@ -1,4 +1,4 @@
-package com.betternotes;
+package com.multinotes;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
@@ -14,31 +14,31 @@ import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Better Notes",
-	description = "Better Notes adds a simple and powerful note editor that has note organization baked in.",
+	name = "Multi Notes",
+	description = "Multi Notes adds a simple and powerful note editor that has note organization baked in.",
 	loadWhenOutdated = true
 )
-public class BetterNotesPlugin extends Plugin
+public class MultiNotesPlugin extends Plugin
 {
 	@Inject
 	private ClientToolbar clientToolbar;
 
 	@Inject
-	private BetterNotesConfig config;
+	private MultiNotesConfig config;
 
-	private BetterNotesPanel panel;
+	private MultiNotesPanel panel;
 	private NavigationButton navButton;
 
 	@Override
 	protected void startUp() throws Exception
 	{
-		panel = injector.getInstance(BetterNotesPanel.class);
+		panel = injector.getInstance(MultiNotesPanel.class);
 		panel.init(config);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/better_notes_icon.png");
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/multi_notes_icon.png");
 
 		navButton = NavigationButton.builder()
-				.tooltip("Better Notes")
+				.tooltip("Multi Notes")
 				.priority(7)
 				.icon(icon)
 				.panel(panel)
@@ -57,8 +57,8 @@ public class BetterNotesPlugin extends Plugin
 	}
 
 	@Provides
-	BetterNotesConfig provideConfig(ConfigManager configManager)
+	MultiNotesConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(BetterNotesConfig.class);
+		return configManager.getConfig(MultiNotesConfig.class);
 	}
 }
